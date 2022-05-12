@@ -1,0 +1,17 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: near
+    name: 4Myfuture
+    network: near-testnet
+    source:
+      account: "dev-1652386671788-70331823852489"
+    mapping:
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ExampleEntity
+      receiptHandlers:
+        - handler: handleReceipt
+      file: ./src/mapping.ts
