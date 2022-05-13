@@ -13,7 +13,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Proposal
-        - Metadata
+        - Container
         - Contribution
       receiptHandlers:
         - handler: handleReceipt

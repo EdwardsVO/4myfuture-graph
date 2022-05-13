@@ -7,7 +7,7 @@ type Proposal @entity {
   # metadata: ProposalMetadata!
 }
 
-type Metadata @entity {
+type Container @entity {
   id: String!
   title: String!
   description: String!

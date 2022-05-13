@@ -70,7 +70,7 @@ export class Proposal extends Entity {
   }
 }
 
-export class Metadata extends Entity {
+export class Container extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -78,18 +78,18 @@ export class Metadata extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Metadata entity without an ID");
+    assert(id != null, "Cannot save Container entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Metadata must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Container must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Metadata", id.toString(), this);
+      store.set("Container", id.toString(), this);
     }
   }
 
-  static load(id: string): Metadata | null {
-    return changetype<Metadata | null>(store.get("Metadata", id));
+  static load(id: string): Container | null {
+    return changetype<Container | null>(store.get("Container", id));
   }
 
   get id(): string {

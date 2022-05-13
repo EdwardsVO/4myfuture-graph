@@ -6,7 +6,7 @@ import {
   log,
   bigInt,
 } from "@graphprotocol/graph-ts";
-import { Contribution, Proposal, Metadata } from "../generated/schema";
+import { Contribution, Proposal, Container } from "../generated/schema";
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -129,17 +129,17 @@ function handleAction(
       }
     }
 
-    let metadata = new Metadata(metadata_id);
-    metadata.id = metadata_id;
-    metadata.title = title;
-    metadata.description = description;
-    metadata.goal = BigInt.fromString(goal);
-    metadata.init_date = BigInt.fromString(init_date);
-    metadata.finish_date = BigInt.fromString(finish_date);
-    metadata.funds = BigInt.fromString(funds);
-    metadata.institution_link = institution_link;
-    metadata.pensum_link = pensum_link;
-    metadata.save();
+    let container = new Container(metadata_id);
+    container.id = metadata_id;
+    container.title = title;
+    container.description = description;
+    container.goal = BigInt.fromString(goal);
+    container.init_date = BigInt.fromString(init_date);
+    container.finish_date = BigInt.fromString(finish_date);
+    container.funds = BigInt.fromString(funds);
+    container.institution_link = institution_link;
+    container.pensum_link = pensum_link;
+    container.save();
     log.info("Proposal Metadata saved", []);
 
 
