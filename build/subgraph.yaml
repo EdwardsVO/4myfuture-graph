@@ -1,12 +1,12 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: near
     name: 4MyFuture
     network: near-testnet
     source:
-      account: "dev-1652415348076-16282496873638"
+      account: dev-1652415348076-16282496873638
       startBlock: 89763521
     mapping:
       apiVersion: 0.0.6
@@ -17,4 +17,4 @@ dataSources:
         - ProposalMetadata
       receiptHandlers:
         - handler: handleReceipt
-      file: ./src/mapping.ts
+      file: 4MyFuture/4MyFuture.wasm
