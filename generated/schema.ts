@@ -70,7 +70,7 @@ export class Proposal extends Entity {
   }
 }
 
-export class ProposalMetadata extends Entity {
+export class Metadata extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -78,20 +78,18 @@ export class ProposalMetadata extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save ProposalMetadata entity without an ID");
+    assert(id != null, "Cannot save Metadata entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type ProposalMetadata must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Metadata must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("ProposalMetadata", id.toString(), this);
+      store.set("Metadata", id.toString(), this);
     }
   }
 
-  static load(id: string): ProposalMetadata | null {
-    return changetype<ProposalMetadata | null>(
-      store.get("ProposalMetadata", id)
-    );
+  static load(id: string): Metadata | null {
+    return changetype<Metadata | null>(store.get("Metadata", id));
   }
 
   get id(): string {
@@ -234,12 +232,21 @@ export class Contribution extends Entity {
     this.set("proposal_id", Value.fromString(value));
   }
 
-  get amount(): string {
+  get amount(): BigInt {
     let value = this.get("amount");
+    return value!.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get image(): string {
+    let value = this.get("image");
     return value!.toString();
   }
 
-  set amount(value: string) {
-    this.set("amount", Value.fromString(value));
+  set image(value: string) {
+    this.set("image", Value.fromString(value));
   }
 }

@@ -13,8 +13,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Proposal
+        - Metadata
         - Contribution
-        - ProposalMetadata
       receiptHandlers:
         - handler: handleReceipt
       file: ./src/mapping.ts
