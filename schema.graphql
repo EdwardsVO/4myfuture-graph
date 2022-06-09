@@ -4,23 +4,25 @@ type Proposal @entity {
   owner: String!
   status: BigInt!
   image: String!
-  # metadata: ProposalMetadata!
+  container: [Container!] @derivedFrom(field: "proposal") 
 }
 
 type Container @entity {
+  proposal: Proposal! 
   id: String!
   title: String!
   description: String!
-  goal: BigInt!
-  init_date: BigInt!
-  finish_date: BigInt!
-  funds: BigInt!
+  goal: String!
+  init_date: String!
+  finish_date: String!
+  funds: String!
   # images: [String!]
   institution_link: String!
   pensum_link: String!
 }
 
-type Contribution @entity {
+
+type Contribution @entity(immutable: true) {
   id: String!
   from: String!
   to: String!

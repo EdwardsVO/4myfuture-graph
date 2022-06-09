@@ -68,6 +68,15 @@ export class Proposal extends Entity {
   set image(value: string) {
     this.set("image", Value.fromString(value));
   }
+
+  get container(): Array<string> {
+    let value = this.get("container");
+    return value!.toStringArray();
+  }
+
+  set container(value: Array<string>) {
+    this.set("container", Value.fromStringArray(value));
+  }
 }
 
 export class Container extends Entity {
@@ -90,6 +99,15 @@ export class Container extends Entity {
 
   static load(id: string): Container | null {
     return changetype<Container | null>(store.get("Container", id));
+  }
+
+  get proposal(): string {
+    let value = this.get("proposal");
+    return value!.toString();
+  }
+
+  set proposal(value: string) {
+    this.set("proposal", Value.fromString(value));
   }
 
   get id(): string {
@@ -119,40 +137,40 @@ export class Container extends Entity {
     this.set("description", Value.fromString(value));
   }
 
-  get goal(): BigInt {
+  get goal(): string {
     let value = this.get("goal");
-    return value!.toBigInt();
+    return value!.toString();
   }
 
-  set goal(value: BigInt) {
-    this.set("goal", Value.fromBigInt(value));
+  set goal(value: string) {
+    this.set("goal", Value.fromString(value));
   }
 
-  get init_date(): BigInt {
+  get init_date(): string {
     let value = this.get("init_date");
-    return value!.toBigInt();
+    return value!.toString();
   }
 
-  set init_date(value: BigInt) {
-    this.set("init_date", Value.fromBigInt(value));
+  set init_date(value: string) {
+    this.set("init_date", Value.fromString(value));
   }
 
-  get finish_date(): BigInt {
+  get finish_date(): string {
     let value = this.get("finish_date");
-    return value!.toBigInt();
+    return value!.toString();
   }
 
-  set finish_date(value: BigInt) {
-    this.set("finish_date", Value.fromBigInt(value));
+  set finish_date(value: string) {
+    this.set("finish_date", Value.fromString(value));
   }
 
-  get funds(): BigInt {
+  get funds(): string {
     let value = this.get("funds");
-    return value!.toBigInt();
+    return value!.toString();
   }
 
-  set funds(value: BigInt) {
-    this.set("funds", Value.fromBigInt(value));
+  set funds(value: string) {
+    this.set("funds", Value.fromString(value));
   }
 
   get institution_link(): string {

@@ -44,7 +44,6 @@ function handleAction(
     let status = "";
     let image = "";
 
-    
     if (parsedJSONProposal.kind == JSONValueKind.OBJECT) {
       let entry = parsedJSONProposal.toObject();
       for (let i = 0; i < entry.entries.length; i++) {
@@ -67,16 +66,6 @@ function handleAction(
       }
     }
 
-    let proposal = new Proposal(id);
-    proposal.id = id;
-    proposal.owner = owner;
-    proposal.status = BigInt.fromString(status);
-    proposal.image = image;
-    proposal.save();
-    log.info("Proposal saved", []);
-  }
-
-  if (functionCall.methodName == "create_proposal") {
     let jsonDataProposalMetadata = outcome.logs[1];
     let parsedJSONProposalMetadata = json.fromString(jsonDataProposalMetadata);
     let metadata_id = "";
@@ -108,16 +97,16 @@ function handleAction(
             description = entry.entries[i].value.toString();
             break;
           case key == "goal":
-            goal = entry.entries[i].value.toI64().toString();
+            goal = entry.entries[i].value.toString();
             break;
           case key == "init_date":
-            init_date = entry.entries[i].value.toI64().toString();
+            init_date = entry.entries[i].value.toString();
             break;
           case key == "finish_date":
-            finish_date = entry.entries[i].value.toI64().toString();
+            finish_date = entry.entries[i].value.toString();
             break;
           case key == "funds":
-            funds = entry.entries[i].value.toI64().toString();
+            funds = entry.entries[i].value.toString();
             break;
           case key == "insitution_link":
             institution_link = entry.entries[i].value.toString();
@@ -133,18 +122,27 @@ function handleAction(
     container.id = metadata_id;
     container.title = title;
     container.description = description;
-    container.goal = BigInt.fromString(goal);
-    container.init_date = BigInt.fromString(init_date);
-    container.finish_date = BigInt.fromString(finish_date);
-    container.funds = BigInt.fromString(funds);
+    container.goal = goal;
+    container.init_date = init_date;
+    container.finish_date = finish_date;
+    container.funds = funds;
     container.institution_link = institution_link;
     container.pensum_link = pensum_link;
-    container.save();
-    log.info("Proposal Metadata saved", []);
-
-
+    
+    let proposal = new Proposal(id);
+    proposal.id = id;
+    proposal.owner = owner;
+    proposal.status = BigInt.fromString(status);
+    proposal.image = image;
+    proposal.container
+    
+    proposal.save();
+    container.save()
+    log.info("Proposal saved", []);
   }
 
+
+  //CONTRIBUTION CREATION TRIGGER
   if (functionCall.methodName == "contribute") {
     let jsonDataContribution = outcome.logs[0];
     let parsedJSONContribution = json.fromString(jsonDataContribution);
@@ -177,13 +175,13 @@ function handleAction(
             break;
           case key == "amount":
             amount = entry.entries[i].value.toI64().toString();
-            break
+            break;
           case key == "image":
             image = entry.entries[i].value.toString();
         }
       }
     }
-    let contribution = new Contribution(id) 
+    let contribution = new Contribution(id);
     contribution.id = id;
     contribution.from = from;
     contribution.to = to;
