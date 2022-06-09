@@ -4,6 +4,7 @@ type Proposal @entity {
   owner: String!
   status: BigInt!
   image: String!
+  percentage_for_reach_goal: String!
   # container: [Container!] @derivedFrom(field: "proposal") 
 }
 
@@ -16,7 +17,7 @@ type Container @entity {
   init_date: String!
   finish_date: String!
   funds: String!
-  # images: [String!]
+  images: [String!]
   institution_link: String!
   pensum_link: String!
 }
@@ -27,6 +28,6 @@ type Contribution @entity(immutable: true) {
   from: String!
   to: String!
   proposal_id: String!
-  amount: BigInt!
+  amount: String!
   image: String!
 }

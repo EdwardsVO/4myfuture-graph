@@ -5,8 +5,17 @@ import {
   JSONValueKind,
   log,
   bigInt,
+  JSONValue,
+  BigDecimal,
 } from "@graphprotocol/graph-ts";
 import { Contribution, Proposal, Container } from "../generated/schema";
+
+const percent = BigInt.fromString("100");
+
+function get_percentage_to_reach_goal(funds: BigInt, goal: BigInt): BigInt {
+  let percentage = funds.times(BigInt.fromI64(100)).div(goal);
+  return percentage;
+}
 
 export function handleReceipt(receipt: near.ReceiptWithOutcome): void {
   const actions = receipt.receipt.actions;
@@ -42,7 +51,6 @@ function handleAction(
     let id = "";
     let owner = "";
     let status = "";
-    let image = "";
 
     if (parsedJSONProposal.kind == JSONValueKind.OBJECT) {
       let entry = parsedJSONProposal.toObject();
@@ -60,8 +68,6 @@ function handleAction(
           case key == "status":
             status = entry.entries[i].value.toI64().toString();
             break;
-          case key == "image":
-            image = entry.entries[i].value.toString();
         }
       }
     }
@@ -75,7 +81,7 @@ function handleAction(
     let init_date = "";
     let finish_date = "";
     let funds = "";
-    //let images:string[] = []
+    let images: JSONValue[] = [];
     let institution_link = "";
     let pensum_link = "";
 
@@ -114,8 +120,16 @@ function handleAction(
           case key == "pensum_link":
             pensum_link = entry.entries[i].value.toString();
             break;
+          case key == "images":
+            images = entry.entries[i].value.toArray();
         }
       }
+    }
+
+    let images_string: string[] = [];
+
+    for (let k = 0; k < images.length; k++) {
+      images_string.push(images[k].toString());
     }
 
     let container = new Container(metadata_id);
@@ -128,21 +142,22 @@ function handleAction(
     container.funds = funds;
     container.institution_link = institution_link;
     container.pensum_link = pensum_link;
-    
+    container.images = images_string;
+
     let proposal = new Proposal(id);
     proposal.id = id;
     proposal.owner = owner;
     proposal.status = BigInt.fromString(status);
-    proposal.image = image;
-    // proposal.container
-    
+    proposal.image = images_string[0];
+    proposal.percentage_for_reach_goal = "0";
+
     proposal.save();
-    container.save()
+    container.save();
     log.info("Proposal saved", []);
   }
 
-
   //CONTRIBUTION CREATION TRIGGER
+  //ALSO IS NEEDED TO UPDATE THE FUNDS AMOUNT IN PROPOSALS WHEN THEY'VE BEEN FUNDING
   if (functionCall.methodName == "contribute") {
     let jsonDataContribution = outcome.logs[0];
     let parsedJSONContribution = json.fromString(jsonDataContribution);
@@ -174,19 +189,43 @@ function handleAction(
             proposal_id = entry.entries[i].value.toString();
             break;
           case key == "amount":
-            amount = entry.entries[i].value.toI64().toString();
+            amount = entry.entries[i].value.toString();
             break;
           case key == "image":
             image = entry.entries[i].value.toString();
         }
       }
     }
+
+    let container = Container.load(proposal_id);
+    if (container) {
+      let added_funds = BigInt.fromString(container.funds).plus(
+        BigInt.fromString(amount)
+      );
+      container.funds = added_funds.toString();
+      container.save();
+
+      let proposal = Proposal.load(proposal_id);
+      if (proposal) {
+        let funds_per_100 = BigDecimal.fromString(container.funds);
+        let percentage = funds_per_100.div(BigDecimal.fromString(container.goal));
+        let percentage_string = percentage.toString();
+
+        proposal.percentage_for_reach_goal = percentage_string ;
+        proposal.save();
+      } else {
+        log.info("proposal no encontrado", []);
+      }
+    } else {
+      log.info("Container No encontrado", []);
+    }
+
     let contribution = new Contribution(id);
     contribution.id = id;
     contribution.from = from;
     contribution.to = to;
     contribution.proposal_id = proposal_id;
-    contribution.amount = BigInt.fromString(amount);
+    contribution.amount = amount;
     contribution.image = image;
     contribution.save();
   }

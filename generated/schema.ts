@@ -69,13 +69,13 @@ export class Proposal extends Entity {
     this.set("image", Value.fromString(value));
   }
 
-  get container(): Array<string> {
-    let value = this.get("container");
-    return value!.toStringArray();
+  get percentage_for_reach_goal(): string {
+    let value = this.get("percentage_for_reach_goal");
+    return value!.toString();
   }
 
-  set container(value: Array<string>) {
-    this.set("container", Value.fromStringArray(value));
+  set percentage_for_reach_goal(value: string) {
+    this.set("percentage_for_reach_goal", Value.fromString(value));
   }
 }
 
@@ -99,15 +99,6 @@ export class Container extends Entity {
 
   static load(id: string): Container | null {
     return changetype<Container | null>(store.get("Container", id));
-  }
-
-  get proposal(): string {
-    let value = this.get("proposal");
-    return value!.toString();
-  }
-
-  set proposal(value: string) {
-    this.set("proposal", Value.fromString(value));
   }
 
   get id(): string {
@@ -171,6 +162,23 @@ export class Container extends Entity {
 
   set funds(value: string) {
     this.set("funds", Value.fromString(value));
+  }
+
+  get images(): Array<string> | null {
+    let value = this.get("images");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set images(value: Array<string> | null) {
+    if (!value) {
+      this.unset("images");
+    } else {
+      this.set("images", Value.fromStringArray(<Array<string>>value));
+    }
   }
 
   get institution_link(): string {
@@ -250,13 +258,13 @@ export class Contribution extends Entity {
     this.set("proposal_id", Value.fromString(value));
   }
 
-  get amount(): BigInt {
+  get amount(): string {
     let value = this.get("amount");
-    return value!.toBigInt();
+    return value!.toString();
   }
 
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
+  set amount(value: string) {
+    this.set("amount", Value.fromString(value));
   }
 
   get image(): string {
