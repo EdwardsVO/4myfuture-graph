@@ -134,7 +134,7 @@ function handleAction(
     proposal.owner = owner;
     proposal.status = BigInt.fromString(status);
     proposal.image = image;
-    proposal.container
+    // proposal.container
     
     proposal.save();
     container.save()

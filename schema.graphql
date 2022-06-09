@@ -4,11 +4,11 @@ type Proposal @entity {
   owner: String!
   status: BigInt!
   image: String!
-  container: [Container!] @derivedFrom(field: "proposal") 
+  # container: [Container!] @derivedFrom(field: "proposal") 
 }
 
 type Container @entity {
-  proposal: Proposal! 
+  # proposal: Proposal! 
   id: String!
   title: String!
   description: String!
