@@ -6,8 +6,8 @@ dataSources:
     name: 4MyFuture
     network: near-testnet
     source:
-      account: "dev-1654720553288-95904537567247"
-      startBlock: 91909280
+      account: "dev-1656521842285-53274651664289"
+      startBlock: 93635040
     mapping:
       apiVersion: 0.0.6
       language: wasm/assemblyscript

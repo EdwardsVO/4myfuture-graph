@@ -44,6 +44,7 @@ function handleAction(
   }
   const functionCall = action.toFunctionCall();
 
+  //CREATE PROPOSAL FUNCTION TRIGGER
   if (functionCall.methodName == "create_proposal") {
     log.info("create proposal", []);
     let jsonDataProposal = outcome.logs[0];
@@ -114,7 +115,7 @@ function handleAction(
           case key == "funds":
             funds = entry.entries[i].value.toString();
             break;
-          case key == "insitution_link":
+          case key == "institution_link":
             institution_link = entry.entries[i].value.toString();
             break;
           case key == "pensum_link":
@@ -157,7 +158,6 @@ function handleAction(
   }
 
   //CONTRIBUTION CREATION TRIGGER
-  //ALSO IS NEEDED TO UPDATE THE FUNDS AMOUNT IN PROPOSALS WHEN THEY'VE BEEN FUNDING
   if (functionCall.methodName == "contribute") {
     let jsonDataContribution = outcome.logs[0];
     let parsedJSONContribution = json.fromString(jsonDataContribution);
@@ -197,30 +197,35 @@ function handleAction(
       }
     }
 
-    let container = Container.load(proposal_id);
-    if (container) {
-      let added_funds = BigInt.fromString(container.funds).plus(
+    let container_contributed = Container.load(proposal_id); //GET PROPOSAL
+    let proposal_contributed = Proposal.load(proposal_id); //GET PROPOSAL METADATA
+
+    if (container_contributed && proposal_contributed) { //CHECK IF PROPOSAL AND METADATA EXIST
+      let added_funds = BigInt.fromString(container_contributed.funds).plus( //SUM CONTRIBUTION TO PROPOSAL FUNDS
         BigInt.fromString(amount)
       );
-      container.funds = added_funds.toString();
-      container.save();
-
-      let proposal = Proposal.load(proposal_id);
-      if (proposal) {
-        let funds_per_100 = BigDecimal.fromString(container.funds);
-        let percentage = funds_per_100.div(BigDecimal.fromString(container.goal));
-        let percentage_string = percentage.toString();
-
-        proposal.percentage_for_reach_goal = percentage_string ;
-        proposal.save();
-      } else {
-        log.info("proposal no encontrado", []);
+      if (added_funds == BigInt.fromString(container_contributed.goal)) { //CHECK IF THE NEW FUNDS REACHED EQUALS TO THE GOAL
+        proposal_contributed.status = BigInt.fromI32(1); //SET PROPOSAL STATUS AS COMPLETED
+        proposal_contributed.save(); //UPDATE THE PROPOSAL
       }
+      container_contributed.funds = added_funds.toString(); //UPDATE THE PROPOSAL FUNDS
+      container_contributed.save(); //UPDATE THE PROPOSAL METADATA
+
+      //CALCULATE THE FUNDS PORCETAGE REACHED AT THE MOMENT IN RELATION TO THE GOAL
+      let funds_per_100 = BigDecimal.fromString(container_contributed.funds); //GET THE FUNDS 
+      let percentage = funds_per_100.div( //FUNDS BETWEEN GOAL 
+        BigDecimal.fromString(container_contributed.goal)
+      );
+      let percentage_string = percentage.toString(); //GET THE RELATION
+
+      proposal_contributed.percentage_for_reach_goal = percentage_string; 
+      proposal_contributed.save(); //UPDATE THE PROPOSAL
+
     } else {
-      log.info("Container No encontrado", []);
+      log.info("Proposal doesnt exist", []);
     }
 
-    let contribution = new Contribution(id);
+    let contribution = new Contribution(id); //CREATE AND SAVE CONTRIBUTION
     contribution.id = id;
     contribution.from = from;
     contribution.to = to;
