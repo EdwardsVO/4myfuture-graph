@@ -4,15 +4,15 @@ Project for quering the 4MyFutureDApp Contract
 
 ## Query example
 `
-{
-  proposals(first: 5) {
+ {
+-  proposals(first: 5) {
     id
     owner
     status
     image
     percentage_for_reach_goal
   }
-  containers(first: 5) {
+-  containers(first: 5) {
     id
     title
     description
@@ -24,7 +24,7 @@ Project for quering the 4MyFutureDApp Contract
     init_date
     finish_date
   }
-  contributions{
+-  contributions{
     id
    	from
     to
